@@ -17,9 +17,11 @@ import seedu.address.commons.core.index.Index;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
+import seedu.address.model.event.Event;
 import seedu.address.model.event.EventStatus;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
 import seedu.address.model.person.Person;
+import seedu.address.testutil.EditEventDescriptorBuilder;
 import seedu.address.testutil.EditPersonDescriptorBuilder;
 
 /**
@@ -71,6 +73,8 @@ public class CommandTestUtil {
 
     public static final EditCommand.EditPersonDescriptor DESC_AMY;
     public static final EditCommand.EditPersonDescriptor DESC_BOB;
+    public static final EditCommand.EditEventDescriptor DESC_CS2030;
+    public static final EditCommand.EditEventDescriptor DESC_CS2107;
 
     static {
         DESC_AMY = new EditPersonDescriptorBuilder().withName(VALID_NAME_AMY)
@@ -79,6 +83,13 @@ public class CommandTestUtil {
         DESC_BOB = new EditPersonDescriptorBuilder().withName(VALID_NAME_BOB)
                 .withPhone(VALID_PHONE_BOB).withEmail(VALID_EMAIL_BOB).withAddress(VALID_ADDRESS_BOB)
                 .withTags(VALID_TAG_HUSBAND, VALID_TAG_FRIEND).build();
+        DESC_CS2030 = new EditEventDescriptorBuilder().withEventName(VALID_NAME_CS2030)
+                .withDescription(VALID_DESCRIPTION_CS2030).withTimeStart(VALID_TIME_START_CS2030)
+                .withTimeEnd(VALID_TIME_END_CS2030).build();
+        DESC_CS2107 = new EditEventDescriptorBuilder().withEventName(VALID_NAME_CS2107)
+                .withDescription(VALID_DESCRIPTION_CS2107).withTimeStart(VALID_TIME_START_CS2107)
+                .withTimeEnd(VALID_TIME_END_CS2107).build();
+
     }
 
     /**

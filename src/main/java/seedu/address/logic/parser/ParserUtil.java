@@ -168,6 +168,7 @@ public class ParserUtil {
         return new Description(trimmedDesc);
     }
 
+    /*
     public static Person parsePerson(String personName) throws ParseException {
         requireNonNull(personName);
         String trimmedPersonName = personName.trim();
@@ -177,7 +178,9 @@ public class ParserUtil {
 
         //TODO find way to parse person
     }
+     */
 
+    /*
     public static Set<Person> parsePersons(Collection<String> persons) throws ParseException {
         requireNonNull(persons);
         final Set<Person> personSet = new HashSet<>();
@@ -186,5 +189,7 @@ public class ParserUtil {
         }
         return personSet;
     }
+
+     */
 
 }

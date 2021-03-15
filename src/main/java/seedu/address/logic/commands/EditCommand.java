@@ -6,6 +6,7 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
+import static seedu.address.model.Model.PREDICATE_SHOW_ALL_EVENTS;
 import static seedu.address.model.Model.PREDICATE_SHOW_ALL_PERSONS;
 
 import java.util.Collections;
@@ -52,6 +53,9 @@ public class EditCommand extends Command {
     public static final String MESSAGE_NOT_EDITED = "At least one field to edit must be provided.";
     public static final String MESSAGE_DUPLICATE_PERSON = "This person already exists in the address book.";
 
+    public static final String MESSAGE_EDIT_EVENT_SUCCESS = "Edited Event: %1$s";
+    public static final String MESSAGE_DUPLICATE_EVENT = "This event already exists in the event book.";
+
     private final Pair pairedIndex;
     private final EditPersonDescriptor editPersonDescriptor;
     private final EditEventDescriptor editEventDescriptor;
@@ -81,22 +85,45 @@ public class EditCommand extends Command {
     @Override
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
-        List<Person> lastShownList = model.getFilteredPersonList();
+        if (pairedIndex.isEditPerson()) {
+            List<Person> lastShownList = model.getFilteredPersonList();
 
-        if (index.getZeroBased() >= lastShownList.size()) {
-            throw new CommandException(Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
+            if (pairedIndex.getIndex().getZeroBased() >= lastShownList.size()) {
+                throw new CommandException(Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
+            }
+
+            Person personToEdit = lastShownList.get(pairedIndex.getIndex().getZeroBased());
+            Person editedPerson = createEditedPerson(personToEdit, editPersonDescriptor);
+
+            if (!personToEdit.isSamePerson(editedPerson) && model.hasPerson(editedPerson)) {
+                throw new CommandException(MESSAGE_DUPLICATE_PERSON);
+            }
+
+            model.setPerson(personToEdit, editedPerson);
+            model.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
+            return new CommandResult(String.format(MESSAGE_EDIT_PERSON_SUCCESS, editedPerson));
+        } else {
+            List<Event> lastShownList = model.getFilteredEventList();
+
+            if (pairedIndex.getIndex().getZeroBased() >= lastShownList.size()) {
+                //Done: change error message to Event Error
+                throw new CommandException(Messages.MESSAGE_INVALID_EVENT_DISPLAYED_INDEX);
+            }
+
+            Event eventToEdit = lastShownList.get(pairedIndex.getIndex().getZeroBased());
+            Event editedEvent = createEditedEvent(eventToEdit, editEventDescriptor);
+
+            if (!eventToEdit.isSameEvent(editedEvent) && model.hasEvent(editedEvent)) {
+                //Done: change error message to duplicate event error
+                throw new CommandException(MESSAGE_DUPLICATE_EVENT);
+            }
+
+            model.setEvent(eventToEdit, editedEvent);
+            model.updateFilteredEventList(PREDICATE_SHOW_ALL_EVENTS);
+            //Done: change success message to event sucess
+            return new CommandResult(String.format(MESSAGE_EDIT_EVENT_SUCCESS, editedEvent));
         }
 
-        Person personToEdit = lastShownList.get(index.getZeroBased());
-        Person editedPerson = createEditedPerson(personToEdit, editPersonDescriptor);
-
-        if (!personToEdit.isSamePerson(editedPerson) && model.hasPerson(editedPerson)) {
-            throw new CommandException(MESSAGE_DUPLICATE_PERSON);
-        }
-
-        model.setPerson(personToEdit, editedPerson);
-        model.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
-        return new CommandResult(String.format(MESSAGE_EDIT_PERSON_SUCCESS, editedPerson));
     }
 
     /**
@@ -144,7 +171,7 @@ public class EditCommand extends Command {
 
         // state check
         EditCommand e = (EditCommand) other;
-        return index.equals(e.index)
+        return pairedIndex.getIndex().equals(e.pairedIndex.getIndex())
                 && editPersonDescriptor.equals(e.editPersonDescriptor);
     }
 
@@ -260,7 +287,7 @@ public class EditCommand extends Command {
 
         private Description description;
         private Set<Tag> tags = new HashSet<>();
-        //private Set<Person> persons = new HashSet<>();
+        private Set<Person> persons = new HashSet<>();
 
         public EditEventDescriptor() {}
 
@@ -271,6 +298,7 @@ public class EditCommand extends Command {
             setStatus(toCopy.status);
             setDescription(toCopy.description);
             setTags(toCopy.tags);
+            setPersons(toCopy.persons);
         }
 
         public boolean isAnyFieldEdited() {
@@ -326,17 +354,14 @@ public class EditCommand extends Command {
             this.tags = (tags != null) ? new HashSet<>(tags) : null;
         }
 
-        /*
         public Optional<Set<Person>> getPersons() {
             return (persons != null) ? Optional.of(Collections.unmodifiableSet(persons)) : Optional.empty();
         }
-         */
 
-        /*
+
         public void setPersons(Set<Person> persons) {
             this.persons = (tags != null) ? new HashSet<>(persons) : null;
         }
-         */
 
         @Override
         public boolean equals(Object other) {
@@ -358,8 +383,7 @@ public class EditCommand extends Command {
                     && getTimeEnd().equals(e.getTimeEnd())
                     && getStatus().equals(e.getStatus())
                     && getDescription().equals(e.getDescription())
-                    && getTags().equals(e.getTags())
-                    && getPersons().equals(e.getPersons());
+                    && getTags().equals(e.getTags());
         }
     }
 }
