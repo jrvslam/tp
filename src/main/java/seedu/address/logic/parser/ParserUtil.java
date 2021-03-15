@@ -9,10 +9,12 @@ import java.util.Set;
 import seedu.address.commons.core.index.Index;
 import seedu.address.commons.util.StringUtil;
 import seedu.address.logic.parser.exceptions.ParseException;
-import seedu.address.model.person.Address;
-import seedu.address.model.person.Email;
-import seedu.address.model.person.Name;
-import seedu.address.model.person.Phone;
+import seedu.address.model.AddressBook;
+import seedu.address.model.event.Description;
+import seedu.address.model.event.EventName;
+import seedu.address.model.event.EventStatus;
+import seedu.address.model.event.EventTime;
+import seedu.address.model.person.*;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -41,7 +43,7 @@ public class ParserUtil {
      *
      * @throws ParseException if the given {@code name} is invalid.
      */
-    public static Name parseName(String name) throws ParseException {
+    public static Name parsePersonName(String name) throws ParseException {
         requireNonNull(name);
         String trimmedName = name.trim();
         if (!Name.isValidName(trimmedName)) {
@@ -121,4 +123,68 @@ public class ParserUtil {
         }
         return tagSet;
     }
+
+    // to parse all other Events Fields
+    public static EventName parseEventName(String name) throws ParseException {
+        requireNonNull(name);
+        String trimmedName = name.trim();
+        if (!EventName.isValidName(trimmedName)) {
+            throw new ParseException(EventName.MESSAGE_CONSTRAINTS);
+        }
+        return new EventName(trimmedName);
+    }
+
+    public static EventTime parseTime(String time) throws ParseException {
+        requireNonNull(time);
+        String trimmedTime = time.trim();
+        if (!EventTime.isValidEventTime(trimmedTime)) {
+            throw new ParseException(EventTime.MESSAGE_CONSTRAINTS);
+        }
+        return new EventTime(trimmedTime);
+    }
+
+    public static EventStatus parseStatus(String status) throws ParseException {
+        requireNonNull(status);
+        String trimmedStatus = status.trim();
+        boolean isNotValid = false;
+        for (EventStatus e : EventStatus.values()) {
+            if (!e.name().equals(trimmedStatus)) {
+                isNotValid = true;
+                break;
+            }
+        }
+        if (isNotValid) {
+            throw new ParseException(EventStatus.MESSAGE_CONSTRAINTS);
+        }
+        return EventStatus.valueOf(trimmedStatus);
+    }
+
+    public static Description parseDesc(String desc) throws ParseException {
+        requireNonNull(desc);
+        String trimmedDesc = desc.trim();
+        if (!Description.isValidDescription(trimmedDesc)) {
+            throw new ParseException(Description.MESSAGE_CONSTRAINTS);
+        }
+        return new Description(trimmedDesc);
+    }
+
+    public static Person parsePerson(String personName) throws ParseException {
+        requireNonNull(personName);
+        String trimmedPersonName = personName.trim();
+        if (!Name.isValidName(trimmedPersonName)) {
+            throw new ParseException(Tag.MESSAGE_CONSTRAINTS);
+        }
+
+        //TODO find way to parse person
+    }
+
+    public static Set<Person> parsePersons(Collection<String> persons) throws ParseException {
+        requireNonNull(persons);
+        final Set<Person> personSet = new HashSet<>();
+        for (String personName : persons) {
+            personSet.add(parsePerson(personName));
+        }
+        return personSet;
+    }
+
 }

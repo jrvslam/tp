@@ -18,7 +18,9 @@ import seedu.address.commons.core.Messages;
 import seedu.address.commons.core.index.Index;
 import seedu.address.commons.util.CollectionUtil;
 import seedu.address.logic.commands.exceptions.CommandException;
+import seedu.address.logic.parser.Pair;
 import seedu.address.model.Model;
+import seedu.address.model.event.*;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
@@ -50,19 +52,30 @@ public class EditCommand extends Command {
     public static final String MESSAGE_NOT_EDITED = "At least one field to edit must be provided.";
     public static final String MESSAGE_DUPLICATE_PERSON = "This person already exists in the address book.";
 
-    private final Index index;
+    private final Pair pairedIndex;
     private final EditPersonDescriptor editPersonDescriptor;
+    private final EditEventDescriptor editEventDescriptor;
 
     /**
-     * @param index of the person in the filtered person list to edit
+     * @param pairedIndex of the person/event in the filtered person/event list to edit
      * @param editPersonDescriptor details to edit the person with
      */
-    public EditCommand(Index index, EditPersonDescriptor editPersonDescriptor) {
-        requireNonNull(index);
+    public EditCommand(Pair pairedIndex, EditPersonDescriptor editPersonDescriptor) {
+        requireNonNull(pairedIndex);
         requireNonNull(editPersonDescriptor);
 
-        this.index = index;
+        this.pairedIndex = pairedIndex;
         this.editPersonDescriptor = new EditPersonDescriptor(editPersonDescriptor);
+        this.editEventDescriptor = null;
+    }
+
+    public EditCommand(Pair pairedIndex, EditEventDescriptor editEventDescriptor) {
+        requireNonNull(pairedIndex);
+        requireNonNull(editEventDescriptor);
+
+        this.pairedIndex = pairedIndex;
+        this.editPersonDescriptor = null;
+        this.editEventDescriptor = editEventDescriptor;
     }
 
     @Override
@@ -100,6 +113,21 @@ public class EditCommand extends Command {
         Set<Tag> updatedTags = editPersonDescriptor.getTags().orElse(personToEdit.getTags());
 
         return new Person(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags);
+    }
+
+    private static Event createEditedEvent(Event eventToEdit, EditEventDescriptor editEventDescriptor) {
+        assert eventToEdit != null;
+
+        EventName updatedEventName = editEventDescriptor.getEventName().orElse(eventToEdit.getName());
+        EventTime updatedTimeStart = editEventDescriptor.getTimeStart().orElse(eventToEdit.getTimeStart());
+        EventTime updatedTimeEnd = editEventDescriptor.getTimeEnd().orElse(eventToEdit.getTimeEnd());
+        EventStatus updatedStatus = editEventDescriptor.getStatus().orElse(eventToEdit.getStatus());
+        Description updatedDesc = editEventDescriptor.getDescription().orElse(eventToEdit.getDescription());
+        Set<Tag> updatedTags = editEventDescriptor.getTags().orElse(eventToEdit.getTags());
+        //Set<Person> updatedPersons = editEventDescriptor.getPersons().orElse(eventToEdit.getPersons());
+
+        return new Event(updatedEventName, updatedTimeStart, updatedTimeEnd, updatedStatus, updatedDesc,
+                updatedTags, eventToEdit.getPersons());
     }
 
     @Override
@@ -221,6 +249,117 @@ public class EditCommand extends Command {
                     && getEmail().equals(e.getEmail())
                     && getAddress().equals(e.getAddress())
                     && getTags().equals(e.getTags());
+        }
+    }
+
+    public static class EditEventDescriptor {
+        private EventName eventName;
+        private EventTime timeStart;
+        private EventTime timeEnd;
+        private EventStatus status;
+
+        private Description description;
+        private Set<Tag> tags = new HashSet<>();
+        //private Set<Person> persons = new HashSet<>();
+
+        public EditEventDescriptor() {}
+
+        public EditEventDescriptor(EditEventDescriptor toCopy) {
+            setEventName(toCopy.eventName);
+            setTimeStart(toCopy.timeStart);
+            setTimeEnd(toCopy.timeEnd);
+            setStatus(toCopy.status);
+            setDescription(toCopy.description);
+            setTags(toCopy.tags);
+        }
+
+        public boolean isAnyFieldEdited() {
+            return CollectionUtil.isAnyNonNull(eventName, timeStart, timeEnd, status,
+                    description, tags);
+        }
+
+        public Optional<EventName> getEventName() {
+            return Optional.ofNullable(eventName);
+        }
+
+        public void setEventName(EventName eventName) {
+            this.eventName = eventName;
+        }
+
+        public Optional<EventTime> getTimeStart() {
+            return Optional.ofNullable(timeStart);
+        }
+
+        public void setTimeStart(EventTime timeStart) {
+            this.timeStart = timeStart;
+        }
+
+        public Optional<EventTime> getTimeEnd() {
+            return Optional.ofNullable(timeEnd);
+        }
+
+        public void setTimeEnd(EventTime timeEnd) {
+            this.timeEnd = timeEnd;
+        }
+
+        public Optional<EventStatus> getStatus() {
+            return Optional.ofNullable(status);
+        }
+
+        public void setStatus(EventStatus status) {
+            this.status = status;
+        }
+
+        public Optional<Description> getDescription() {
+            return Optional.ofNullable(description);
+        }
+
+        public void setDescription(Description description) {
+            this.description = description;
+        }
+
+        public Optional<Set<Tag>> getTags() {
+            return (tags != null) ? Optional.of(Collections.unmodifiableSet(tags)) : Optional.empty();
+        }
+
+        public void setTags(Set<Tag> tags) {
+            this.tags = (tags != null) ? new HashSet<>(tags) : null;
+        }
+
+        /*
+        public Optional<Set<Person>> getPersons() {
+            return (persons != null) ? Optional.of(Collections.unmodifiableSet(persons)) : Optional.empty();
+        }
+         */
+
+        /*
+        public void setPersons(Set<Person> persons) {
+            this.persons = (tags != null) ? new HashSet<>(persons) : null;
+        }
+         */
+
+        @Override
+        public boolean equals(Object other) {
+            // short circuit if same object
+            if (other == this) {
+                return true;
+            }
+
+            // instanceof handles nulls
+            if (!(other instanceof EditEventDescriptor)) {
+                return false;
+            }
+
+            // state check
+            EditEventDescriptor e = (EditEventDescriptor) other;
+
+            return getEventName().equals(e.getEventName())
+                    && getTimeStart().equals(e.getTimeStart())
+                    && getTimeEnd().equals(e.getTimeEnd())
+                    && getStatus().equals(e.getStatus())
+                    && getDescription().equals(e.getDescription())
+                    && getTags().equals(e.getTags())
+                    && getPersons().equals(e.getPersons());
         }
     }
 }
