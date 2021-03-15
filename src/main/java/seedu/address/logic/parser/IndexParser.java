@@ -20,14 +20,20 @@ public class IndexParser {
      */
     public static Pair parseEditIndex(String oneBasedIndex) throws ParseException {
         String trimmedIndex = oneBasedIndex.trim();
-        String type = trimmedIndex.substring(0, 1);
-        String unparsedIndex = trimmedIndex.substring(1);
-        if (!StringUtil.isNonZeroUnsignedInteger(unparsedIndex)) {
+        String type;
+        String unparsedIndex;
+        try {
+            type = trimmedIndex.substring(0, 1);
+            unparsedIndex = trimmedIndex.substring(1);
+        } catch (IndexOutOfBoundsException e) {
             throw new ParseException(MESSAGE_INVALID_INDEX);
         }
+        if (!StringUtil.isNonZeroUnsignedInteger(unparsedIndex)) {
+            throw new ParseException(MESSAGE_INVALID_INDEX + unparsedIndex);
+        }
 
-        if (!type.equalsIgnoreCase("E") || !type.equalsIgnoreCase("P")) {
-            throw new ParseException(MESSAGE_INVALID_TYPE);
+        if (!type.equalsIgnoreCase("E") && !type.equalsIgnoreCase("P")) {
+            throw new ParseException(MESSAGE_INVALID_TYPE + type);
         }
         return new Pair(Index.fromOneBased(Integer.parseInt(unparsedIndex)), type);
     }

@@ -159,10 +159,10 @@ public class EditCommand extends Command {
         EventStatus updatedStatus = editEventDescriptor.getStatus().orElse(eventToEdit.getStatus());
         Description updatedDesc = editEventDescriptor.getDescription().orElse(eventToEdit.getDescription());
         Set<Tag> updatedTags = editEventDescriptor.getTags().orElse(eventToEdit.getTags());
-        //Set<Person> updatedPersons = editEventDescriptor.getPersons().orElse(eventToEdit.getPersons());
+        Set<Person> updatedPersons = editEventDescriptor.getPersons().orElse(eventToEdit.getPersons());
 
         return new Event(updatedEventName, updatedTimeStart, updatedTimeEnd, updatedStatus, updatedDesc,
-                updatedTags, eventToEdit.getPersons());
+                updatedTags, updatedPersons);
     }
 
     @Override
@@ -179,8 +179,14 @@ public class EditCommand extends Command {
 
         // state check
         EditCommand e = (EditCommand) other;
-        return pairedIndex.getIndex().equals(e.pairedIndex.getIndex())
-                && editPersonDescriptor.equals(e.editPersonDescriptor);
+        if (e.pairedIndex.isEditPerson()) {
+            return pairedIndex.getIndex().equals(e.pairedIndex.getIndex())
+                    && editPersonDescriptor.equals(e.editPersonDescriptor);
+        } else {
+            return pairedIndex.getIndex().equals(e.pairedIndex.getIndex())
+                    && editEventDescriptor.equals(e.editEventDescriptor);
+        }
+
     }
 
     /**
@@ -299,7 +305,7 @@ public class EditCommand extends Command {
 
         private Description description;
         private Set<Tag> tags = new HashSet<>();
-        private Set<Person> persons = new HashSet<>();
+        private Set<Person> persons;
 
         public EditEventDescriptor() {}
 
@@ -319,7 +325,7 @@ public class EditCommand extends Command {
 
         public boolean isAnyFieldEdited() {
             return CollectionUtil.isAnyNonNull(eventName, timeStart, timeEnd, status,
-                    description, tags);
+                    description, tags, persons);
         }
 
         /**
@@ -377,13 +383,13 @@ public class EditCommand extends Command {
             this.tags = (tags != null) ? new HashSet<>(tags) : null;
         }
 
+
         public Optional<Set<Person>> getPersons() {
             return (persons != null) ? Optional.of(Collections.unmodifiableSet(persons)) : Optional.empty();
         }
 
-
         public void setPersons(Set<Person> persons) {
-            this.persons = (tags != null) ? new HashSet<>(persons) : null;
+            this.persons = (persons != null) ? new HashSet<>(persons) : null;
         }
 
         @Override

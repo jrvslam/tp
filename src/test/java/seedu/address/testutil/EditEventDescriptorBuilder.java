@@ -4,6 +4,7 @@ import seedu.address.logic.commands.EditCommand.EditEventDescriptor;
 import seedu.address.model.event.Description;
 import seedu.address.model.event.Event;
 import seedu.address.model.event.EventName;
+import seedu.address.model.event.EventStatus;
 import seedu.address.model.event.EventTime;
 
 public class EditEventDescriptorBuilder {
@@ -53,6 +54,14 @@ public class EditEventDescriptorBuilder {
      */
     public EditEventDescriptorBuilder withTimeEnd(String eventTime) {
         descriptor.setTimeEnd(new EventTime(eventTime));
+        return this;
+    }
+
+    /**
+     * Sets the {@code status} of the {@code EditEventDescriptor} that we are building.
+     */
+    public EditEventDescriptorBuilder withStatus(EventStatus status) {
+        descriptor.setStatus(status);
         return this;
     }
 

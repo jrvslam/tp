@@ -94,6 +94,10 @@ public class EditCommandParser implements Parser<EditCommand> {
                 editEventDescriptor.setDescription(ParserUtil.parseDesc(argMultimap.getValue(PREFIX_DESC).get()));
             }
             parseTagsForEdit(argMultimap.getAllValues(PREFIX_TAG)).ifPresent(editEventDescriptor::setTags);
+
+            if (!editEventDescriptor.isAnyFieldEdited()) {
+                throw new ParseException(EditCommand.MESSAGE_NOT_EDITED);
+            }
             editCommand = new EditCommand(pairedIndex, editEventDescriptor);
         }
 

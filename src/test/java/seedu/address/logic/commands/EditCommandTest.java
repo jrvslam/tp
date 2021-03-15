@@ -10,6 +10,7 @@ import static seedu.address.logic.commands.CommandTestUtil.VALID_DESCRIPTION_CS2
 import static seedu.address.logic.commands.CommandTestUtil.VALID_NAME_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_NAME_CS2030;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_PHONE_BOB;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_STATUS_CS2030;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_TAG_HUSBAND;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_TIME_END_CS2030;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_TIME_START_CS2030;
@@ -114,11 +115,12 @@ public class EditCommandTest {
 
         EventBuilder eventInList = new EventBuilder(lastEvent);
         Event editedEvent = eventInList.withName(VALID_NAME_CS2030).withDescription(VALID_DESCRIPTION_CS2030)
-                .withTimeStart(VALID_TIME_START_CS2030).withTimeEnd(VALID_TIME_END_CS2030).build();
+                .withTimeStart(VALID_TIME_START_CS2030).withTimeEnd(VALID_TIME_END_CS2030)
+                .withStatus(VALID_STATUS_CS2030).build();
 
         EditEventDescriptor descriptor = new EditEventDescriptorBuilder().withEventName(VALID_NAME_CS2030)
                 .withDescription(VALID_DESCRIPTION_CS2030).withTimeStart(VALID_TIME_START_CS2030)
-                .withTimeEnd(VALID_TIME_END_CS2030).build();
+                .withTimeEnd(VALID_TIME_END_CS2030).withStatus(VALID_STATUS_CS2030).build();
         EditCommand editCommand = new EditCommand(pairedIndexLastEvent, descriptor);
 
         String expectedMessage = String.format(EditCommand.MESSAGE_EDIT_EVENT_SUCCESS, editedEvent);
@@ -126,6 +128,7 @@ public class EditCommandTest {
         Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs(),
                 new EventBook(model.getEventBook()));
 
+        expectedModel.setEvent(lastEvent, editedEvent);
         assertCommandSuccess(editCommand, model, expectedMessage, expectedModel);
     }
 
@@ -153,6 +156,7 @@ public class EditCommandTest {
         Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs(),
                 new EventBook(model.getEventBook()));
 
+        System.out.println("Test " + editedEvent.toString());
         assertCommandSuccess(editCommand, model, expectedMessage, expectedModel);
     }
 
@@ -282,7 +286,7 @@ public class EditCommandTest {
         assertFalse(standardCommand.equals(new EditCommand(INDEX_SECOND_PAIR_EVENT, DESC_CS2030)));
 
         // different descriptor -> returns false
-        assertFalse(standardCommand.equals(new EditCommand(INDEX_FIRST_PAIR_PERSON, DESC_CS2107)));
+        assertFalse(standardCommand.equals(new EditCommand(INDEX_FIRST_PAIR_EVENT, DESC_CS2107)));
     }
 
 }

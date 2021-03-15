@@ -30,7 +30,7 @@ public class CommandTestUtil {
 
     public static final String VALID_NAME_CS2030 = "CS2030";
     public static final String VALID_NAME_CS2107 = "CS2107";
-    public static final String VALID_DESCRIPTION_CS2030 = "Object-oriented Programming";
+    public static final String VALID_DESCRIPTION_CS2030 = "Object oriented Programming";
     public static final String VALID_DESCRIPTION_CS2107 = "Introduction to Information Security";
     public static final EventStatus VALID_STATUS_CS2030 = EventStatus.DONE;
     public static final EventStatus VALID_STATUS_CS2107 = EventStatus.IN_PROGRESS;
