@@ -9,12 +9,14 @@ import java.util.Set;
 import seedu.address.commons.core.index.Index;
 import seedu.address.commons.util.StringUtil;
 import seedu.address.logic.parser.exceptions.ParseException;
-import seedu.address.model.AddressBook;
 import seedu.address.model.event.Description;
 import seedu.address.model.event.EventName;
 import seedu.address.model.event.EventStatus;
 import seedu.address.model.event.EventTime;
-import seedu.address.model.person.*;
+import seedu.address.model.person.Address;
+import seedu.address.model.person.Email;
+import seedu.address.model.person.Name;
+import seedu.address.model.person.Phone;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -125,6 +127,12 @@ public class ParserUtil {
     }
 
     // to parse all other Events Fields
+
+    /**
+     * Parses an {@code String event name} into a {@code EventName}.
+     *
+     * @throws ParseException if the given {@code name} is invalid
+     */
     public static EventName parseEventName(String name) throws ParseException {
         requireNonNull(name);
         String trimmedName = name.trim();
@@ -134,6 +142,11 @@ public class ParserUtil {
         return new EventName(trimmedName);
     }
 
+    /**
+     * Parses an {@code String event time} into a {@code EventTime}.
+     *
+     * @throws ParseException if the given{@code time} is invalid.
+     */
     public static EventTime parseTime(String time) throws ParseException {
         requireNonNull(time);
         String trimmedTime = time.trim();
@@ -143,6 +156,9 @@ public class ParserUtil {
         return new EventTime(trimmedTime);
     }
 
+    /**
+     * Parses an {@code String event status} into a {@code EventStatus}.
+     */
     public static EventStatus parseStatus(String status) throws ParseException {
         requireNonNull(status);
         String trimmedStatus = status.trim();
@@ -159,6 +175,9 @@ public class ParserUtil {
         return EventStatus.valueOf(trimmedStatus);
     }
 
+    /**
+     * Parses an {@code String event description} into a {@code Description}.
+     */
     public static Description parseDesc(String desc) throws ParseException {
         requireNonNull(desc);
         String trimmedDesc = desc.trim();

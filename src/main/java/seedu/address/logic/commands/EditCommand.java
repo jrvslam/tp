@@ -16,7 +16,6 @@ import java.util.Optional;
 import java.util.Set;
 
 import seedu.address.commons.core.Messages;
-import seedu.address.commons.core.index.Index;
 import seedu.address.commons.util.CollectionUtil;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.logic.parser.Pair;
@@ -73,6 +72,11 @@ public class EditCommand extends Command {
         this.editEventDescriptor = null;
     }
 
+    /**
+     *
+     * @param pairedIndex of the person/event in the filtered person/event list to edit
+     * @param editEventDescriptor details to edit the event with
+     */
     public EditCommand(Pair pairedIndex, EditEventDescriptor editEventDescriptor) {
         requireNonNull(pairedIndex);
         requireNonNull(editEventDescriptor);
@@ -279,6 +283,10 @@ public class EditCommand extends Command {
         }
     }
 
+    /**
+     * Stores the details to edit the event with. Each non-empty field value will replace the
+     * corresponding field value of the event.
+     */
     public static class EditEventDescriptor {
         private EventName eventName;
         private EventTime timeStart;
@@ -291,6 +299,10 @@ public class EditCommand extends Command {
 
         public EditEventDescriptor() {}
 
+        /**
+         * Copy constructor.
+         * A defensive copy of {@code tags} is used internally.
+         */
         public EditEventDescriptor(EditEventDescriptor toCopy) {
             setEventName(toCopy.eventName);
             setTimeStart(toCopy.timeStart);
@@ -306,6 +318,9 @@ public class EditCommand extends Command {
                     description, tags);
         }
 
+        /**
+         * Returns true if at least one field is edited.
+         */
         public Optional<EventName> getEventName() {
             return Optional.ofNullable(eventName);
         }
@@ -350,6 +365,10 @@ public class EditCommand extends Command {
             return (tags != null) ? Optional.of(Collections.unmodifiableSet(tags)) : Optional.empty();
         }
 
+        /**
+         * Sets {@code tags} to this object's {@code tags}.
+         * A defensive copy of {@code tags} is used internally.
+         */
         public void setTags(Set<Tag> tags) {
             this.tags = (tags != null) ? new HashSet<>(tags) : null;
         }

@@ -7,8 +7,8 @@ import static seedu.address.testutil.TypicalEvents.getTypicalEventBook;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_PERSON;
 import static seedu.address.testutil.TypicalPairedIndexes.INDEX_FIRST_PAIR_EVENT;
-import static seedu.address.testutil.TypicalPairedIndexes.INDEX_SECOND_PAIR_EVENT;
 import static seedu.address.testutil.TypicalPairedIndexes.INDEX_FIRST_PAIR_PERSON;
+import static seedu.address.testutil.TypicalPairedIndexes.INDEX_SECOND_PAIR_EVENT;
 import static seedu.address.testutil.TypicalPairedIndexes.INDEX_SECOND_PAIR_PERSON;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 
@@ -16,8 +16,8 @@ import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.core.Messages;
 import seedu.address.commons.core.index.Index;
-import seedu.address.logic.commands.EditCommand.EditPersonDescriptor;
 import seedu.address.logic.commands.EditCommand.EditEventDescriptor;
+import seedu.address.logic.commands.EditCommand.EditPersonDescriptor;
 import seedu.address.logic.parser.Pair;
 import seedu.address.model.*;
 import seedu.address.model.event.Event;
